@@ -16,3 +16,15 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::prefix('v1')->group(function () {
+    //public route
+    Route::post('loginStudent', 'AuthController@loginStudent');
+    Route::post('registerStudent', 'AuthController@registerStudent');
+    Route::post('registerLecturer', 'AuthController@registerLecturer');
+    //private route
+    Route::middleware('auth:api')->group(function () {
+        Route::post('logoutStudent', 'AuthController@logoutStudent');
+        Route::post('logoutLecturer', 'AuthController@logoutLecturer');
+    });
+});
