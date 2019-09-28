@@ -2,10 +2,13 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Str;
 
-class Lecturer extends Model
+class Lecturer extends Authenticatable
 {
+    use Notifiable;
     /**
      * The attributes that are mass assignable.
      *
@@ -26,7 +29,7 @@ class Lecturer extends Model
 
     public function generateToken()
     {
-    $this->api_token = str_random(60);
+    $this->api_token = Str::random(60);
     $this->save();
     return $this->api_token;
     }

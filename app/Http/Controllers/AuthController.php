@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Student;
+use App\Lecturer;
 
 class AuthController extends Controller
 {
@@ -43,6 +45,40 @@ class AuthController extends Controller
         ], $code);
     }
 
+    public function loginLecturer(Request $request)
+    {
+        $this->validate($request, [
+            'nip' => 'required',
+            'password' => 'required',
+        ]);
+
+        $lecturer = Lecturer::where('nip', '=', $request->nip)->firstOrFail();
+        $status = "error";
+        $message = "";
+        $data = null;
+        $code = 401;
+        if ($lecturer) {
+            if (Hash::check($request->password, $lecturer->password)) {
+                //generate token
+                $lecturer->generateToken();
+                $status = 'success';
+                $message = 'Login sukses';
+                $data = $lecturer->toArray();
+                $code = 200;
+            } else {
+                $message = "Login gagal, password salah";
+            }
+        } else {
+            $message = "Login gagal, username salah";
+        }
+
+        return response()->json([
+            'status' => $status,
+            'message' => $message,
+            'data' => $data
+        ], $code);
+    }
+
     public function registerStudent(Request $request)
     {
     $validator = Validator::make($request->all(), [
@@ -62,7 +98,7 @@ class AuthController extends Controller
     }
     else{
         // validasi sukses
-        $student = \App\Student::create([
+        $student = Student::create([
             'nim' => $request->nim,
             'password' => Hash::make($request->password),
         ]);
@@ -105,7 +141,7 @@ class AuthController extends Controller
     }
     else{
         // validasi sukses
-        $lecturer = \App\Lecturer::create([
+        $lecturer = Lecturer::create([
             'nip' => $request->nip,
             'password' => Hash::make($request->password),
         ]);

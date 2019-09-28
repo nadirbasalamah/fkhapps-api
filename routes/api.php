@@ -20,6 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::prefix('v1')->group(function () {
     //public route
     Route::post('loginStudent', 'AuthController@loginStudent');
+    Route::post('loginLecturer', 'AuthController@loginLecturer');
     Route::post('registerStudent', 'AuthController@registerStudent');
     Route::post('registerLecturer', 'AuthController@registerLecturer');
     //private route
