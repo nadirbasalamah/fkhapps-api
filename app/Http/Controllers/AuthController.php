@@ -166,7 +166,7 @@ class AuthController extends Controller
     }
     public function logoutStudent(Request $request)
     {
-    $student = Auth::student();
+    $student = Auth::user();
     if ($student) {
     $student->api_token = null;
     $student->save();
@@ -180,7 +180,7 @@ class AuthController extends Controller
 
     public function logoutLecturer(Request $request)
     {
-    $lecturer = Auth::lecturer();
+    $lecturer = Auth::user();
     if ($lecturer) {
     $lecturer->api_token = null;
     $lecturer->save();

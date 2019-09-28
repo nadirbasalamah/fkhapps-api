@@ -23,9 +23,13 @@ Route::prefix('v1')->group(function () {
     Route::post('loginLecturer', 'AuthController@loginLecturer');
     Route::post('registerStudent', 'AuthController@registerStudent');
     Route::post('registerLecturer', 'AuthController@registerLecturer');
+    
     //private route
-    Route::middleware('auth:api')->group(function () {
+    Route::middleware('auth:student')->group(function () {
         Route::post('logoutStudent', 'AuthController@logoutStudent');
+    });
+
+    Route::middleware('auth:lecturer')->group(function () {
         Route::post('logoutLecturer', 'AuthController@logoutLecturer');
     });
 });
