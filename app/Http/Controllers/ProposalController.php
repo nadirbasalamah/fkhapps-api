@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Resources\Proposals as ProposalResource;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 use App\Proposal;
 
 class ProposalController extends Controller
@@ -59,23 +58,6 @@ class ProposalController extends Controller
         return new ProposalResource($criteria);
     }
 
-    public function uploadProposal(Request $request)
-    {
-        $student = Auth::user();
-        $status = "error";
-        $message = "";
-        $data = [];
-    if($student){
-        //TODO: upload proposal
-    }
-    else {
-        $message = "Error, access not allowed";
-    }
-        return response()->json([
-        'status' => $status,
-        'message' => $message,
-        'data' => $data
-        ], 200);
-    }
+    
 
 }

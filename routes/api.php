@@ -30,6 +30,7 @@ Route::prefix('v1')->group(function () {
     //private route
     Route::middleware('auth:student')->group(function () {
         Route::get('getAllLecturers', 'StudentController@getAllLecturers');
+        Route::post('uploadProposal','StudentController@uploadProposal');
         Route::post('logoutStudent', 'AuthController@logoutStudent');
     });
 
