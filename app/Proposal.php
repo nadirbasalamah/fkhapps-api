@@ -14,4 +14,14 @@ class Proposal extends Model
     protected $fillable = [
         'title','research_background','research_question','filename','status'
     ];
+
+    public function student()
+    {
+        return $this->belongsTo("App\Student");
+    }
+
+    public function lecturer()
+    {
+        return $this->belongsTo("App\Lecturer");
+    }
 }

@@ -34,4 +34,10 @@ class Lecturer extends Authenticatable
     $this->save();
     return $this->api_token;
     }
+
+    public function proposal()
+    {
+        return $this->hasOne("App\Proposal");
+    }
+    
 }

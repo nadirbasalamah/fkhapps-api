@@ -23,13 +23,18 @@ Route::prefix('v1')->group(function () {
     Route::post('loginLecturer', 'AuthController@loginLecturer');
     Route::post('registerStudent', 'AuthController@registerStudent');
     Route::post('registerLecturer', 'AuthController@registerLecturer');
+    Route::get('getAllProposal','ProposalController@getAllProposal');
+    Route::get('getProposalByStudentId/{id}', 'ProposalController@getProposalByStudentId');
+    Route::get('getProposalByTitle/{title}', 'ProposalController@getProposalByTitle');
     
     //private route
     Route::middleware('auth:student')->group(function () {
+        Route::get('getAllLecturers', 'StudentController@getAllLecturers');
         Route::post('logoutStudent', 'AuthController@logoutStudent');
     });
 
     Route::middleware('auth:lecturer')->group(function () {
+        Route::get('getAllProposalsByLecturerId','ProposalController@getAllProposalsByLecturerId');
         Route::post('logoutLecturer', 'AuthController@logoutLecturer');
     });
 });

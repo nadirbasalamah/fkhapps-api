@@ -34,4 +34,9 @@ class Student extends Authenticatable
     $this->save();
     return $this->api_token;
     }
+
+    public function proposal()
+    {
+        return $this->hasOne("App\Proposal");
+    }
 }
