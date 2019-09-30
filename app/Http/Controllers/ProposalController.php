@@ -40,6 +40,15 @@ class ProposalController extends Controller
         ], 200);
     }
 
+    public function getProposalById($id)
+    {
+        $criteria = Proposal::select('*')
+        ->where('id','=',$id)
+        ->orderBy('id', 'DESC')
+        ->get();
+        return new ProposalResource($criteria);
+    }
+
     public function getProposalByStudentId($id)
     {
         $criteria = Proposal::select('*')

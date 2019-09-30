@@ -52,7 +52,7 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        $lecturer = Lecturer::where('nip', '=', $request->nip)->firstOrFail();
+        $lecturer = Lecturer::where('nip', '=', 'P' . $request->nip)->firstOrFail();
         $status = "error";
         $message = "";
         $data = null;
@@ -142,7 +142,7 @@ class AuthController extends Controller
     else{
         // validasi sukses
         $lecturer = Lecturer::create([
-            'nip' => $request->nip,
+            'nip' => 'P'. $request->nip,
             'password' => Hash::make($request->password),
         ]);
         if($lecturer){

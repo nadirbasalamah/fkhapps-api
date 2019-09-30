@@ -24,6 +24,7 @@ Route::prefix('v1')->group(function () {
     Route::post('registerStudent', 'AuthController@registerStudent');
     Route::post('registerLecturer', 'AuthController@registerLecturer');
     Route::get('getAllProposal','ProposalController@getAllProposal');
+    Route::get('getProposalById/{id}', 'ProposalController@getProposalById');
     Route::get('getProposalByStudentId/{id}', 'ProposalController@getProposalByStudentId');
     Route::get('getProposalByTitle/{title}', 'ProposalController@getProposalByTitle');
     
@@ -36,6 +37,7 @@ Route::prefix('v1')->group(function () {
 
     Route::middleware('auth:lecturer')->group(function () {
         Route::get('getAllProposalsByLecturerId','ProposalController@getAllProposalsByLecturerId');
+        Route::put('verifyProposal/{id}','LecturerController@verifyProposal');
         Route::post('logoutLecturer', 'AuthController@logoutLecturer');
     });
 });
