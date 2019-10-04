@@ -45,13 +45,16 @@ class StudentController extends Controller
             $errors = $validator->errors();
             $message = $errors;
         } else {
+            $proposalName = "proposal.pdf";
+            $path = $request->file('filename')->move(public_path("/proposals"), $proposalName);
+            $proposalUrl = url("/public/proposals/" . $proposalName);
             $proposal = Proposal::create([
                 'id_student' => $student->id,
                 'id_lecturer' => $request->id_lecturer,
                 'title' => $request->title,
                 'research_background' => $request->research_background,
                 'research_question' => $request->research_question,
-                'filename' => $request->filename,
+                'filename' => $proposalUrl,
                 'status' => 'uploaded',
             ]);
             if($proposal){
