@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Lecturer;
 use App\Proposal;
+use App\Report;
 
 class StudentController extends Controller
 {
@@ -45,7 +46,7 @@ class StudentController extends Controller
             $errors = $validator->errors();
             $message = $errors;
         } else {
-            $proposalName = "proposal.pdf";
+            $proposalName = time() . "proposal.pdf";
             $path = $request->file('filename')->move(public_path("/proposals"), $proposalName);
             $proposalUrl = url("/public/proposals/" . $proposalName);
             $proposal = Proposal::create([
@@ -61,6 +62,59 @@ class StudentController extends Controller
                 $status = "success";
                 $message = "upload success";
                 $data = $proposal->toArray();
+                $code = 200;
+            }
+            else{
+                $message = 'upload failed';
+            }
+        }
+    }
+    else {
+        $message = "Error, access not allowed";
+    }
+        return response()->json([
+        'status' => $status,
+        'message' => $message,
+        'data' => $data
+        ], $code);
+    }
+
+    public function uploadReport(Request $request)
+    {
+        $student = Auth::user();
+        $status = "error";
+        $message = "";
+        $data = [];
+        $code = 403;
+    if($student){
+        //TODO: upload report
+        $validator = Validator::make($request->all(), [
+            'id_lecturer' => 'required', 
+            'title' => 'required',
+            'research_background' => 'required',
+            'research_question' => 'required',
+            'filename' => 'required',
+        ]);
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            $message = $errors;
+        } else {
+            $reportName = time() . "laporan_akhir.pdf";
+            $path = $request->file('filename')->move(public_path("/proposals"), $reportName);
+            $reportUrl = url("/public/proposals/" . $reportName);
+            $report = Report::create([
+                'id_student' => $student->id,
+                'id_lecturer' => $request->id_lecturer,
+                'title' => $request->title,
+                'research_background' => $request->research_background,
+                'research_question' => $request->research_question,
+                'filename' => $reportUrl,
+                'status' => 'uploaded',
+            ]);
+            if($report){
+                $status = "success";
+                $message = "upload success";
+                $data = $report->toArray();
                 $code = 200;
             }
             else{

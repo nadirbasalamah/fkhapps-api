@@ -66,7 +66,4 @@ class ProposalController extends Controller
         ->get();
         return new ProposalResource($criteria);
     }
-
-    
-
 }
