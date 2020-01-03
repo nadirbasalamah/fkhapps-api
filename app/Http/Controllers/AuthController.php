@@ -83,6 +83,7 @@ class AuthController extends Controller
     {
     $validator = Validator::make($request->all(), [
     'nim' => 'required|string|min:15', // nim harus diisi teks dengan panjang maksimal 15
+    'nip' => 'required|string|min:15', // nip harus diisi teks dengan panjang maksimal 15
     'password' => 'required|string|min:6', // password minimal 6 karakter
     ]);
 
@@ -100,9 +101,11 @@ class AuthController extends Controller
         // validasi sukses
         $student = Student::create([
             'nim' => $request->nim,
+            'nip' => $request->nip,
             'password' => Hash::make($request->password),
         ]);
-        if($student){
+        $lecturer = Lecturer::where('nip', '=', 'P' . $request->nip)->firstOrFail();
+        if($student && $lecturer){
             $student->generateToken();
             $status = "success";
             $message = "register successfully";

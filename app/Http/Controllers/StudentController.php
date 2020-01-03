@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Resources\Lecturers as LecturerResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 use App\Lecturer;
 use App\Proposal;
 use App\Report;
@@ -36,7 +37,6 @@ class StudentController extends Controller
     if($student){
         //TODO: upload proposal
         $validator = Validator::make($request->all(), [
-            'id_lecturer' => 'required', 
             'title' => 'required',
             'research_background' => 'required',
             'research_question' => 'required',
@@ -49,9 +49,10 @@ class StudentController extends Controller
             $proposalName = time() . "proposal.pdf";
             $path = $request->file('filename')->move(public_path("/proposals"), $proposalName);
             $proposalUrl = url("/public/proposals/" . $proposalName);
+            $id_lecturer = DB::table('lecturers')->select('id')->where('nip','=','P' . $student->nip)->get(['id'])->pluck('id');
             $proposal = Proposal::create([
                 'id_student' => $student->id,
-                'id_lecturer' => $request->id_lecturer,
+                'id_lecturer' => $id_lecturer[0],
                 'title' => $request->title,
                 'research_background' => $request->research_background,
                 'research_question' => $request->research_question,
