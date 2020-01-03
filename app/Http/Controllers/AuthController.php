@@ -99,21 +99,26 @@ class AuthController extends Controller
     }
     else{
         // validasi sukses
-        $student = Student::create([
-            'nim' => $request->nim,
-            'nip' => $request->nip,
-            'password' => Hash::make($request->password),
-        ]);
         $lecturer = Lecturer::where('nip', '=', 'P' . $request->nip)->firstOrFail();
-        if($student && $lecturer){
-            $student->generateToken();
-            $status = "success";
-            $message = "register successfully";
-            $data = $student->toArray();
-            $code = 200;
-        }
-        else{
-            $message = 'register failed';
+        if($lecturer) {
+            $student = Student::create([
+                'nim' => $request->nim,
+                'nip' => $request->nip,
+                'password' => Hash::make($request->password),
+            ]);
+            if($student){
+                $student->generateToken();
+                $status = "success";
+                $message = "register successfully";
+                $data = $student->toArray();
+                $code = 200;
+            }
+            else{
+                $message = 'register failed, nim already exist';
+            }
+
+        } else {
+            $message = 'register failed, nip not found';
         }
     }
 
