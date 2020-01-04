@@ -90,7 +90,6 @@ class StudentController extends Controller
     if($student){
         //TODO: upload report
         $validator = Validator::make($request->all(), [
-            'id_lecturer' => 'required', 
             'title' => 'required',
             'research_background' => 'required',
             'research_question' => 'required',
@@ -100,27 +99,34 @@ class StudentController extends Controller
             $errors = $validator->errors();
             $message = $errors;
         } else {
-            $reportName = time() . "laporan_akhir.pdf";
-            $path = $request->file('filename')->move(public_path("/proposals"), $reportName);
-            $reportUrl = url("/public/proposals/" . $reportName);
-            $report = Report::create([
-                'id_student' => $student->id,
-                'id_lecturer' => $request->id_lecturer,
-                'title' => $request->title,
-                'research_background' => $request->research_background,
-                'research_question' => $request->research_question,
-                'filename' => $reportUrl,
-                'status' => 'uploaded',
-            ]);
-            if($report){
-                $status = "success";
-                $message = "upload success";
-                $data = $report->toArray();
-                $code = 200;
+            $proposal = Proposal::where('id_student','=',$student->id)->where('status','=','accepted')->firstOrfail();
+            if($proposal) {
+                $reportName = time() . "laporan_akhir.pdf";
+                $path = $request->file('filename')->move(public_path("/proposals"), $reportName);
+                $reportUrl = url("/public/proposals/" . $reportName);
+                $id_lecturer = DB::table('lecturers')->select('id')->where('nip','=','P' . $student->nip)->get(['id'])->pluck('id');
+                $report = Report::create([
+                    'id_student' => $student->id,
+                    'id_lecturer' => $id_lecturer[0],
+                    'title' => $request->title,
+                    'research_background' => $request->research_background,
+                    'research_question' => $request->research_question,
+                    'filename' => $reportUrl,
+                    'status' => 'uploaded',
+                ]);
+                if($report){
+                    $status = "success";
+                    $message = "upload success";
+                    $data = $report->toArray();
+                    $code = 200;
+                }
+                else{
+                    $message = 'upload failed';
+                }
+            } else {
+                $message = 'upload failed, proposal has to be accepted first';
             }
-            else{
-                $message = 'upload failed';
-            }
+
         }
     }
     else {

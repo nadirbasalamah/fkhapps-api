@@ -46,8 +46,8 @@ Route::prefix('v1')->group(function () {
     Route::middleware('auth:lecturer')->group(function () {
         Route::get('getAllProposalsByLecturerId','ProposalController@getAllProposalsByLecturerId');
         Route::get('getAllReportsByLecturerId','ReportController@getAllReportsByLecturerId');
-        Route::put('verifyProposal/{id}','LecturerController@verifyProposal');
-        Route::put('verifyReport/{id}','LecturerController@verifyReport');
+        Route::post('verifyProposal/{id}','LecturerController@verifyProposal');
+        Route::post('verifyReport/{id}','LecturerController@verifyReport');
         Route::post('logoutLecturer', 'AuthController@logoutLecturer');
     });
 });
