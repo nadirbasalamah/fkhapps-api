@@ -57,7 +57,7 @@ class StudentController extends Controller
                 'research_background' => $request->research_background,
                 'research_question' => $request->research_question,
                 'filename' => $proposalUrl,
-                'status' => 'uploaded',
+                'status' => 'waiting',
             ]);
             if($proposal){
                 $status = "success";
@@ -112,7 +112,7 @@ class StudentController extends Controller
                     'research_background' => $request->research_background,
                     'research_question' => $request->research_question,
                     'filename' => $reportUrl,
-                    'status' => 'uploaded',
+                    'status' => 'waiting',
                 ]);
                 if($report){
                     $status = "success";

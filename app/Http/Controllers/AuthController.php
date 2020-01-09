@@ -157,6 +157,7 @@ class AuthController extends Controller
     {
     $validator = Validator::make($request->all(), [
     'nip' => 'required|string|min:15|max:15', // nim harus diisi teks dengan panjang maksimal 15
+    'name' => 'required|string',
     'password' => 'required|string|min:6', // password minimal 6 karakter
     ]);
 
@@ -171,10 +172,11 @@ class AuthController extends Controller
         $message = $errors;
     }
     else{
-        if(is_numeric($request->nip)) {
+        if(is_numeric($request->nip) && ctype_alpha(str_replace(' ','',$request->name))) {
             // validasi sukses
             $lecturer = Lecturer::create([
                 'nip' => 'P'. $request->nip,
+                'name' => $request->name,
                 'password' => Hash::make($request->password),
             ]);
             if($lecturer){
