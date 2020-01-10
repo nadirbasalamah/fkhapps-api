@@ -46,7 +46,7 @@ class AuthController extends Controller
             } else {
                 $message = "NIM may only contains number";
             }
-        }
+            }
         return response()->json([
             'status' => $status,
             'message' => $message,
@@ -101,8 +101,12 @@ class AuthController extends Controller
     public function registerStudent(Request $request)
     {
     $validator = Validator::make($request->all(), [
-    'nim' => 'required|string|min:15|max:15', // nim harus diisi teks dengan panjang maksimal 15
-    'nip' => 'required|string|min:15|max:15', // nip harus diisi teks dengan panjang maksimal 15
+    'nim' => 'required|string|regex:/^[0-9 .\-]+$/i|min:15|max:15', // nim harus diisi teks dengan panjang maksimal 15
+    'name' => 'required|string|regex:/^[a-z .\-]+$/i',
+    'major' => 'required|string|regex:/^[a-z .\-]+$/i',
+    'study_program' => 'required|string|regex:/^[a-z .\-]+$/i',
+    'academic_year' => 'required|integer',
+    'nip' => 'required|string|regex:/^[0-9 .\-]+$/i|min:15|max:15', // nip harus diisi teks dengan panjang maksimal 15
     'password' => 'required|string|min:6', // password minimal 6 karakter
     ]);
 
@@ -118,11 +122,14 @@ class AuthController extends Controller
     }
     else{
         // validasi sukses
-        if(is_numeric($request->nim) && is_numeric($request->nip)) {
             $lecturer = Lecturer::where('nip', '=', 'P' . $request->nip)->firstOrFail();
             if($lecturer) {
                 $student = Student::create([
                     'nim' => $request->nim,
+                    'name' => $request->name,
+                    'major' => $request->major,
+                    'study_program' => $request->study_program,
+                    'academic_year' => $request->academic_year,
                     'nip' => $request->nip,
                     'password' => Hash::make($request->password),
                 ]);
@@ -140,11 +147,7 @@ class AuthController extends Controller
             } else {
                 $message = 'register failed, nip not found';
             }
-        } else {
-            $message = "NIM and NIP may only contains number";
         }
-    }
-
     return response()->json([
         'status' => $status,
         'message' => $message,
