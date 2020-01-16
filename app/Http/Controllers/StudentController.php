@@ -3,28 +3,23 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Resources\Lecturers as LecturerResource;
+use App\Http\Resources\Students as StudentResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
-use App\Lecturer;
+use App\Student;
 use App\Proposal;
 use App\Report;
 
 class StudentController extends Controller
 {
-    public function getAllLecturers(Request $request)
+    public function getStudentById($id)
     {
-        $student = Auth::user();
-        if ($student) {
-            $criteria = Lecturer::paginate(6);
-            return new LecturerResource($criteria);
-        } else {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'access forbidden, please login first',
-            ], 403);
-        }
+        $criteria = Student::select('*')
+        ->where('id','=',$id)
+        ->orderBy('id', 'DESC')
+        ->get();
+        return new StudentResource($criteria);
     }
 
     public function uploadProposal(Request $request)

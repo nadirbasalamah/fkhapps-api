@@ -33,10 +33,11 @@ Route::prefix('v1')->group(function () {
     Route::get('getReportById/{id}', 'ReportController@getReportById');
     Route::get('getReportByStudentId/{id}', 'ReportController@getReportByStudentId');
     Route::get('getReportByTitle/{title}', 'ReportController@getReportByTitle');
+
+    Route::get('getStudentById/{id}', 'StudentController@getStudentById');
     
     //private routes for student
     Route::middleware('auth:student')->group(function () {
-        Route::get('getAllLecturers', 'StudentController@getAllLecturers');
         Route::post('uploadProposal','StudentController@uploadProposal');
         Route::post('uploadReport','StudentController@uploadReport');
         Route::post('logoutStudent', 'AuthController@logoutStudent');
