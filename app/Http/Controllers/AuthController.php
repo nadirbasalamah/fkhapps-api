@@ -57,7 +57,7 @@ class AuthController extends Controller
     public function loginLecturer(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'nip' => 'required|string|min:15|max:15', 
+            'nip' => 'required|string|min:16|max:16', 
             'password' => 'required', 
         ]);
         
@@ -71,8 +71,8 @@ class AuthController extends Controller
             $errors = $validator->errors();
             $message = $errors;
         } else {
-            if(is_numeric($request->nip)) {
-                $lecturer = Lecturer::where('nip', '=', 'P' . $request->nip)->firstOrFail();
+            if(is_numeric(str_replace("P",0,$request->nip))) {
+                $lecturer = Lecturer::where('nip', '=', $request->nip)->firstOrFail();
                 if ($lecturer) {
                     if (Hash::check($request->password, $lecturer->password)) {
                         //generate token
@@ -103,6 +103,7 @@ class AuthController extends Controller
     $validator = Validator::make($request->all(), [
     'nim' => 'required|string|regex:/^[0-9 .\-]+$/i|min:15|max:15', // nim harus diisi teks dengan panjang maksimal 15
     'name' => 'required|string|regex:/^[a-z .\-]+$/i',
+    'email' => 'required|email',
     'major' => 'required|string|regex:/^[a-z .\-]+$/i',
     'study_program' => 'required|string|regex:/^[a-z .\-]+$/i',
     'academic_year' => 'required|integer',
@@ -127,6 +128,7 @@ class AuthController extends Controller
                 $student = Student::create([
                     'nim' => $request->nim,
                     'name' => $request->name,
+                    'email' => $request->email,
                     'major' => $request->major,
                     'study_program' => $request->study_program,
                     'academic_year' => $request->academic_year,
@@ -161,6 +163,7 @@ class AuthController extends Controller
     $validator = Validator::make($request->all(), [
     'nip' => 'required|string|min:15|max:15', // nim harus diisi teks dengan panjang maksimal 15
     'name' => 'required|string',
+    'email' => 'required|email',
     'password' => 'required|string|min:6', // password minimal 6 karakter
     ]);
 
@@ -180,6 +183,7 @@ class AuthController extends Controller
             $lecturer = Lecturer::create([
                 'nip' => 'P'. $request->nip,
                 'name' => $request->name,
+                'email' => $request->email,
                 'password' => Hash::make($request->password),
             ]);
             if($lecturer){

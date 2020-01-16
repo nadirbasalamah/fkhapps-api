@@ -16,7 +16,7 @@ class Student extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'nim','name','major','study_program','academic_year','nip','password'
+        'nim','name','email','major','study_program','academic_year','nip','password'
     ];
 
     /**
