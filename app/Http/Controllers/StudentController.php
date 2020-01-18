@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 use App\Student;
 use App\Proposal;
 use App\Report;
+use App\Mail\TestMail;
+use Illuminate\Support\Facades\Mail;
 
 class StudentController extends Controller
 {
@@ -17,6 +19,15 @@ class StudentController extends Controller
     {
         $criteria = Student::select('*')
         ->where('id','=',$id)
+        ->orderBy('id', 'DESC')
+        ->get();
+        return new StudentResource($criteria);
+    }
+
+    public function getStudentByToken($token)
+    {
+        $criteria = Student::select('*')
+        ->where('api_token','=',$token)
         ->orderBy('id', 'DESC')
         ->get();
         return new StudentResource($criteria);
@@ -45,6 +56,7 @@ class StudentController extends Controller
             $path = $request->file('filename')->move(public_path("/proposals"), $proposalName);
             $proposalUrl = url("/public/proposals/" . $proposalName);
             $id_lecturer = DB::table('lecturers')->select('id')->where('nip','=','P' . $student->nip)->get(['id'])->pluck('id');
+            $lecturer_email = DB::table('lecturers')->select('email')->where('nip','=','P' . $student->nip)->get(['email'])->pluck('email');
             $proposal = Proposal::create([
                 'id_student' => $student->id,
                 'id_lecturer' => $id_lecturer[0],
@@ -54,7 +66,15 @@ class StudentController extends Controller
                 'filename' => $proposalUrl,
                 'status' => 'waiting',
             ]);
-            if($proposal){
+            if($proposal){           
+                $data = [
+                    'message' => 'New proposal has been uploaded by : ' . $student->name,
+                    'name' => $student->name,
+                    'address' => $student->email,
+                    'subject' => 'New Proposal Uploaded'
+                ];
+                //Mail to lecturer's email
+                Mail::to($lecturer_email[0])->send(new TestMail($data));
                 $status = "success";
                 $message = "upload success";
                 $data = $proposal->toArray();
@@ -100,6 +120,7 @@ class StudentController extends Controller
                 $path = $request->file('filename')->move(public_path("/proposals"), $reportName);
                 $reportUrl = url("/public/proposals/" . $reportName);
                 $id_lecturer = DB::table('lecturers')->select('id')->where('nip','=','P' . $student->nip)->get(['id'])->pluck('id');
+                $lecturer_email = DB::table('lecturers')->select('email')->where('nip','=','P' . $student->nip)->get(['email'])->pluck('email');
                 $report = Report::create([
                     'id_student' => $student->id,
                     'id_lecturer' => $id_lecturer[0],
@@ -110,6 +131,16 @@ class StudentController extends Controller
                     'status' => 'waiting',
                 ]);
                 if($report){
+                    $data = [
+                        'message' => 'New report has been uploaded by : ' . $student->name,
+                        'name' => $student->name,
+                        'address' => $student->email,
+                        'subject' => 'New Report Uploaded'
+                    ];
+                    //Mail to lecturer's email
+                    Mail::to($lecturer_email[0])->send(new TestMail($data));
+
+
                     $status = "success";
                     $message = "upload success";
                     $data = $report->toArray();

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Student;
 use App\Lecturer;
+use App\Admin;
 
 class AuthController extends Controller
 {
@@ -90,6 +91,45 @@ class AuthController extends Controller
             } else {
                 $message = "NIP may only contains number";
             }
+        }
+        return response()->json([
+            'status' => $status,
+            'message' => $message,
+            'data' => $data
+        ], $code);
+    }
+
+    public function loginAdmin(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required', 
+            'password' => 'required', 
+        ]);
+        $status = "error";
+        $message = "";
+        $data = null;
+        $code = 401;
+
+        if ($validator->fails()) { // fungsi untuk ngecek apakah validasi gagal
+            // validasi gagal
+            $errors = $validator->errors();
+            $message = $errors;
+        } else {
+                $admin = Admin::where('name', '=', $request->name)->firstOrFail();
+                if ($admin) {
+                    if (Hash::check($request->password, $admin->password)) {
+                        //generate token
+                        $admin->generateToken();
+                        $status = 'success';
+                        $message = 'Login sukses';
+                        $data = $admin->toArray();
+                        $code = 200;
+                    } else {
+                        $message = "Login gagal, password salah";
+                    }
+                } else {
+                        $message = "Login gagal, username salah";
+                }   
         }
         return response()->json([
             'status' => $status,
@@ -208,6 +248,50 @@ class AuthController extends Controller
     ], $code);
 
     }
+
+    public function registerAdmin(Request $request)
+    {
+    $validator = Validator::make($request->all(), [
+    'name' => 'required|string',
+    'password' => 'required|string|min:6', // password minimal 6 karakter
+    ]);
+
+    $status = "error";
+    $message = "";
+    $data = null;
+    $code = 400;
+
+    if ($validator->fails()) { // fungsi untuk ngecek apakah validasi gagal
+        // validasi gagal
+        $errors = $validator->errors();
+        $message = $errors;
+    }
+    else{
+            // validasi sukses
+            $admin = Admin::create([
+                'name' => $request->name,
+                'password' => Hash::make($request->password),
+            ]);
+            if($admin){
+                $admin->generateToken();
+                $status = "success";
+                $message = "register successfully";
+                $data = $admin->toArray();
+                $code = 200;
+            }
+            else{
+                $message = 'register failed';
+            }
+        
+    }
+
+    return response()->json([
+        'status' => $status,
+        'message' => $message,
+        'data' => $data
+    ], $code);
+
+    }
     public function logoutStudent(Request $request)
     {
     $student = Auth::user();
@@ -228,6 +312,20 @@ class AuthController extends Controller
     if ($lecturer) {
     $lecturer->api_token = null;
     $lecturer->save();
+    }
+    return response()->json([
+    'status' => 'success',
+    'message' => 'logout berhasil',
+    'data' => null
+    ], 200);
+    }
+
+    public function logoutAdmin(Request $request)
+    {
+    $admin = Auth::user();
+    if ($admin) {
+    $admin->api_token = null;
+    $admin->save();
     }
     return response()->json([
     'status' => 'success',

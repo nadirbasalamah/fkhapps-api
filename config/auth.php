@@ -58,6 +58,12 @@ return [
             'provider' => 'lecturers',
             'hash' => false,
         ],
+
+        'admin' => [
+            'driver' => 'token',
+            'provider' => 'admin',
+            'hash' => false,
+        ],
     ],
 
     /*
@@ -89,6 +95,10 @@ return [
         'students' => [
             'driver' => 'eloquent',
             'model' => \App\Student::class
+        ],
+        'admin' => [
+            'driver' => 'eloquent',
+            'model' => \App\Admin::class
         ]
 
         // 'users' => [
