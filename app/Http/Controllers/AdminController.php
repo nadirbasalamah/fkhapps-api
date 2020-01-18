@@ -19,13 +19,29 @@ class AdminController extends Controller
 
     public function getUserByToken($token)
     {
-        $student = Student::where('api_token','=',$token)->get();
-        $lecturer = Lecturer::where('api_token','=',$token)->get();
+        $isStudentFound = true;
+        $isLecturerFound = true;
+        try {
+            $student = Student::where('api_token','=',$token)->firstOrfail();
+        } catch (\Throwable $th) {
+            $isStudentFound = false;
+        }
 
-        if($student) {
+        try {
+            $lecturer = Lecturer::where('api_token','=',$token)->firstOrfail();
+        } catch (\Throwable $th) {
+            $isLecturerFound = false;
+        }
+        
+        if($isStudentFound) {
             return new StudentResource($student);
-        } else {
+        } else if($isLecturerFound) {
             return new LecturerResource($lecturer);
+        } else {
+            return response()->json([
+                'status' => "error",
+                'message' => "Error, data not found"
+            ], 404);
         }
     }
 
