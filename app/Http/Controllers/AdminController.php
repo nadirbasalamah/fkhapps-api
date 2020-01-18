@@ -6,14 +6,28 @@ use Illuminate\Http\Request;
 use App\Http\Resources\Lecturers as LecturerResource;
 use App\Http\Resources\Reports as ReportResource;
 use App\Http\Resources\Proposals as ProposalResource;
+use App\Http\Resources\Students as StudentResource;
 use Illuminate\Support\Facades\Auth;
 use App\Lecturer;
 use App\Report;
 use App\Proposal;
+use App\Student;
 
 
 class AdminController extends Controller
 {
+
+    public function getUserByToken($token)
+    {
+        $student = Student::where('api_token','=',$token)->get();
+        $lecturer = Lecturer::where('api_token','=',$token)->get();
+
+        if($student) {
+            return new StudentResource($student);
+        } else {
+            return new LecturerResource($lecturer);
+        }
+    }
 
     public function getAllLecturers()
     {

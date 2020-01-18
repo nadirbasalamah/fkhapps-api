@@ -41,6 +41,8 @@ Route::prefix('v1')->group(function () {
     Route::get('getStudentByToken/{token}','StudentController@getStudentByToken');
     Route::get('getLecturerByToken/{token}','LecturerController@getLecturerByToken');
 
+    Route::get('getUserByToken/{token}','AdminController@getUserByToken');
+
     //private routes for student
     Route::middleware('auth:student')->group(function () {
         Route::post('uploadProposal','StudentController@uploadProposal');
