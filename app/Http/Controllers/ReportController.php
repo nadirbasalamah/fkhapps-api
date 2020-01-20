@@ -15,7 +15,7 @@ class ReportController extends Controller
         return new ReportResource($criteria);
     }
 
-    public function getAllReportsByLecturerId(Request $request)
+    public function getAllReportsByLecturerId(Request $request, $id)
     {
         $lecturer = Auth::user();
         $status = "error";
@@ -23,7 +23,7 @@ class ReportController extends Controller
         $data = [];
     if($lecturer){
         $reports = Report::select('*')
-        ->where('id_lecturer','=',$lecturer->id)
+        ->where('id_lecturer','=',$id)
         ->orderBy('id','DESC')
         ->get();
         $status = "success";

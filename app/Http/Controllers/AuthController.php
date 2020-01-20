@@ -22,6 +22,7 @@ class AuthController extends Controller
         $message = "";
         $data = null;
         $code = 401;
+        $isStudentFound = true;
 
         if ($validator->fails()) { // fungsi untuk ngecek apakah validasi gagal
             // validasi gagal
@@ -29,8 +30,12 @@ class AuthController extends Controller
             $message = $errors;
         } else {
             if(is_numeric($request->nim)) {
-                $student = Student::where('nim', '=', $request->nim)->firstOrFail();
-                if ($student) {
+                try {
+                    $student = Student::where('nim', '=', $request->nim)->firstOrFail();
+                } catch (\Throwable $th) {
+                    $isStudentFound = false;
+                }
+                if ($isStudentFound) {
                     if (Hash::check($request->password, $student->password)) {
                         //generate token
                         $student->generateToken();
@@ -39,10 +44,10 @@ class AuthController extends Controller
                         $data = $student->toArray();
                         $code = 200;
                     } else {
-                        $message = "Login gagal, password salah";
+                        $message = "Login failed, invalid password";
                     }
                 } else {
-                        $message = "Login gagal, username salah";
+                        $message = "Login failed, invalid NIM";
                 }
             } else {
                 $message = "NIM may only contains number";
@@ -66,6 +71,7 @@ class AuthController extends Controller
         $message = "";
         $data = null;
         $code = 401;
+        $isLecturerFound = true;
 
         if ($validator->fails()) { // fungsi untuk ngecek apakah validasi gagal
             // validasi gagal
@@ -73,8 +79,13 @@ class AuthController extends Controller
             $message = $errors;
         } else {
             if(is_numeric(str_replace("P",0,$request->nip))) {
-                $lecturer = Lecturer::where('nip', '=', $request->nip)->firstOrFail();
-                if ($lecturer) {
+                try {
+                    $lecturer = Lecturer::where('nip', '=', $request->nip)->firstOrFail();
+                } catch (\Throwable $th) {
+                    $isLecturerFound = false;
+                }
+                
+                if ($isLecturerFound) {
                     if (Hash::check($request->password, $lecturer->password)) {
                         //generate token
                         $lecturer->generateToken();
@@ -83,10 +94,10 @@ class AuthController extends Controller
                         $data = $lecturer->toArray();
                         $code = 200;
                     } else {
-                        $message = "Login gagal, password salah";
+                        $message = "Login failed, invalid password";
                     }
                 } else {
-                    $message = "Login gagal, username salah";
+                    $message = "Login failed, invalid NIP";
                 }
             } else {
                 $message = "NIP may only contains number";
@@ -109,14 +120,19 @@ class AuthController extends Controller
         $message = "";
         $data = null;
         $code = 401;
+        $isAdminFound = true;
 
         if ($validator->fails()) { // fungsi untuk ngecek apakah validasi gagal
             // validasi gagal
             $errors = $validator->errors();
             $message = $errors;
         } else {
-                $admin = Admin::where('name', '=', $request->name)->firstOrFail();
-                if ($admin) {
+                try {
+                    $admin = Admin::where('name', '=', $request->name)->firstOrFail();
+                } catch (\Throwable $th) {
+                    $isAdminFound = false;
+                }
+                if ($isAdminFound) {
                     if (Hash::check($request->password, $admin->password)) {
                         //generate token
                         $admin->generateToken();
@@ -125,10 +141,10 @@ class AuthController extends Controller
                         $data = $admin->toArray();
                         $code = 200;
                     } else {
-                        $message = "Login gagal, password salah";
+                        $message = "Login failed, invalid password";
                     }
                 } else {
-                        $message = "Login gagal, username salah";
+                        $message = "Login failed, invalid username";
                 }   
         }
         return response()->json([
@@ -155,6 +171,7 @@ class AuthController extends Controller
     $message = "";
     $data = null;
     $code = 400;
+    $lecturerFound = true;
 
     if ($validator->fails()) { // fungsi untuk ngecek apakah validasi gagal
         // validasi gagal
@@ -163,8 +180,12 @@ class AuthController extends Controller
     }
     else{
         // validasi sukses
-            $lecturer = Lecturer::where('nip', '=', 'P' . $request->nip)->firstOrFail();
-            if($lecturer) {
+            try {
+                $lecturer = Lecturer::where('nip', '=', 'P' . $request->nip)->firstOrFail();
+            } catch (\Throwable $th) {
+                $lecturerFound = false;
+            }
+            if($lecturerFound) {
                 $student = Student::create([
                     'nim' => $request->nim,
                     'name' => $request->name,
@@ -301,7 +322,7 @@ class AuthController extends Controller
     }
     return response()->json([
     'status' => 'success',
-    'message' => 'logout berhasil',
+    'message' => 'logout success',
     'data' => null
     ], 200);
     }
@@ -315,7 +336,7 @@ class AuthController extends Controller
     }
     return response()->json([
     'status' => 'success',
-    'message' => 'logout berhasil',
+    'message' => 'logout success',
     'data' => null
     ], 200);
     }
@@ -329,7 +350,7 @@ class AuthController extends Controller
     }
     return response()->json([
     'status' => 'success',
-    'message' => 'logout berhasil',
+    'message' => 'logout success',
     'data' => null
     ], 200);
     }

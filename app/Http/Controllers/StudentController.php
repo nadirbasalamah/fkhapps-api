@@ -102,6 +102,7 @@ class StudentController extends Controller
         $message = "";
         $data = [];
         $code = 403;
+        $isProposalFound = true;
     if($student){
         //TODO: upload report
         $validator = Validator::make($request->all(), [
@@ -114,8 +115,12 @@ class StudentController extends Controller
             $errors = $validator->errors();
             $message = $errors;
         } else {
-            $proposal = Proposal::where('id_student','=',$student->id)->where('status','=','accepted')->firstOrfail();
-            if($proposal) {
+            try {
+                $proposal = Proposal::where('id_student','=',$student->id)->where('status','=','approved')->firstOrfail();
+            } catch (\Throwable $th) {
+                $isProposalFound = false;
+            }
+            if($isProposalFound) {
                 $reportName = time() . "laporan_akhir.pdf";
                 $path = $request->file('filename')->move(public_path("/proposals"), $reportName);
                 $reportUrl = url("/public/proposals/" . $reportName);

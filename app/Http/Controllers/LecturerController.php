@@ -30,6 +30,7 @@ class LecturerController extends Controller
         $message = "";
         $data = [];
         $code = 400;
+        $status = 'error';
         $lecturer = Auth::user();
         if ($lecturer) {
             $validator = Validator::make($request->all(), [
@@ -41,29 +42,37 @@ class LecturerController extends Controller
                 $message = $errors;
             } else {
                 $proposal = Proposal::find($id);
-                $proposal->status = $request->status;
-                $proposal->notes = $request->notes;
-                $proposal->save();
-                $message = 'proposal status updated!';
-                $code = 200;
-                $data = $proposal;
+                if (!is_null($proposal)) {
+                    $proposal->status = $request->status;
+                    $proposal->notes = $request->notes;
+                    $proposal->save();
+                    $message = 'proposal status updated!';
+                    $code = 200;
+                    $data = $proposal;
 
-                $data = [
-                    'message' => 'Proposal has been ' . $request->status . '\n Notes : ' . $request->notes,
-                    'name' => $lecturer->name,
-                    'address' => $lecturer->email,
-                    'subject' => 'Proposal ' . $request->status
-                ];
-                //Mail to student's email
-                $student_email = DB::table('students')->select('email')->where('id','=', $proposal->id_student)->get(['email'])->pluck('email');
-                Mail::to($student_email[0])->send(new TestMail($data));
+                    $data = [
+                        'message' => 'Proposal has been ' . $request->status . '\n Notes : ' . $request->notes,
+                        'name' => $lecturer->name,
+                        'address' => $lecturer->email,
+                        'subject' => 'Proposal ' . $request->status
+                    ];
+                    //Mail to student's email
+                    $student_email = DB::table('students')->select('email')->where('id','=', $proposal->id_student)->get(['email'])->pluck('email');
+                    Mail::to($student_email[0])->send(new TestMail($data));
+    
+                    $data = $proposal;
+                    $status = 'success';
+                } else {
+                    $message = "Error, proposal not found";
+                    $code = 404;
+                }
             }
         } else {
             $message = "Error, access not allowed";
             $code = 403;
         }
         return response()->json([
-            'status' => 'success',
+            'status' => $status,
             'message' => $message,
             'data' => $data
             ], $code);
@@ -74,6 +83,7 @@ class LecturerController extends Controller
         $message = "";
         $data = [];
         $code = 400;
+        $status = 'error';
         $lecturer = Auth::user();
         if ($lecturer) {
             $validator = Validator::make($request->all(), [
@@ -85,29 +95,37 @@ class LecturerController extends Controller
                 $message = $errors;
             } else {
                 $report = Report::find($id);
-                $report->status = $request->status;
-                $report->notes = $request->notes;
-                $report->save();
-                $message = 'report status updated!';
-                $code = 200;
-                $data = $report;
+                if (!is_null($report)) {
+                    $report->status = $request->status;
+                    $report->notes = $request->notes;
+                    $report->save();
+                    $message = 'report status updated!';
+                    $code = 200;
+                    $data = $report;
+    
+                    $data = [
+                        'message' => 'Report has been ' . $request->status . '\n Notes : ' . $request->notes,
+                        'name' => $lecturer->name,
+                        'address' => $lecturer->email,
+                        'subject' => 'Report ' . $request->status
+                    ];
+                    //Mail to student's email
+                    $student_email = DB::table('students')->select('email')->where('id','=', $report->id_student)->get(['email'])->pluck('email');
+                    Mail::to($student_email[0])->send(new TestMail($data));
 
-                $data = [
-                    'message' => 'Report has been ' . $request->status . '\n Notes : ' . $request->notes,
-                    'name' => $lecturer->name,
-                    'address' => $lecturer->email,
-                    'subject' => 'Report ' . $request->status
-                ];
-                //Mail to student's email
-                $student_email = DB::table('students')->select('email')->where('id','=', $report->id_student)->get(['email'])->pluck('email');
-                Mail::to($student_email[0])->send(new TestMail($data));
+                    $data = $report;
+                    $status = 'success';
+                } else {
+                    $message = "Error, report not found";
+                    $code = 404;
+                }
             }
         } else {
             $message = "Error, access not allowed";
             $code = 403;
         }
         return response()->json([
-            'status' => 'success',
+            'status' => $status,
             'message' => $message,
             'data' => $data
             ], $code);

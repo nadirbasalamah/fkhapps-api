@@ -15,7 +15,7 @@ class ProposalController extends Controller
         return new ProposalResource($criteria);
     }
 
-    public function getAllProposalsByLecturerId(Request $request)
+    public function getAllProposalsByLecturerId(Request $request, $id)
     {
         $lecturer = Auth::user();
         $status = "error";
@@ -23,7 +23,7 @@ class ProposalController extends Controller
         $data = [];
     if($lecturer){
         $proposals = Proposal::select('*')
-        ->where('id_lecturer','=',$lecturer->id)
+        ->where('id_lecturer','=',$id)
         ->orderBy('id','DESC')
         ->get();
         $status = "success";
