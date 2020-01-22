@@ -16,7 +16,7 @@ class Reports extends JsonResource
     {
         return [
             'status' => 'success',
-            'message' => 'proposals data',
+            'message' => 'reports data',
             'data' => parent::toArray($request),
         ];
     }

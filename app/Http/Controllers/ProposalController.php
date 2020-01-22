@@ -5,13 +5,17 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Resources\Proposals as ProposalResource;
 use Illuminate\Support\Facades\Auth;
-use App\Proposal;
+use Illuminate\Support\Facades\DB;
 
 class ProposalController extends Controller
 {
     public function getAllProposal()
     {
-        $criteria = Proposal::paginate(6);
+        $criteria = DB::table('proposals')
+                    ->join('students','proposals.id_student','students.id')
+                    ->join('lecturers','proposals.id_lecturer','lecturers.id')
+                    ->select('proposals.*','students.name','students.major','lecturers.name AS lecturer_name')
+                    ->get();
         return new ProposalResource($criteria);
     }
 
@@ -22,9 +26,12 @@ class ProposalController extends Controller
         $message = "";
         $data = [];
     if($lecturer){
-        $proposals = Proposal::select('*')
-        ->where('id_lecturer','=',$id)
-        ->orderBy('id','DESC')
+        $proposals = DB::table('proposals')
+        ->join('students','proposals.id_student','students.id')
+        ->join('lecturers','proposals.id_lecturer','lecturers.id')
+        ->select('proposals.*','students.name','students.major','lecturers.name AS lecturer_name')
+        ->where('proposals.id_lecturer','=',$id)
+        ->orderBy('proposals.id','DESC')
         ->get();
         $status = "success";
         $message = "data of proposals";
@@ -42,27 +49,36 @@ class ProposalController extends Controller
 
     public function getProposalById($id)
     {
-        $criteria = Proposal::select('*')
-        ->where('id','=',$id)
-        ->orderBy('id', 'DESC')
+        $criteria = DB::table('proposals')
+        ->join('students','proposals.id_student','students.id')
+        ->join('lecturers','proposals.id_lecturer','lecturers.id')
+        ->select('proposals.*','students.name','students.major','lecturers.name AS lecturer_name')
+        ->where('proposals.id','=',$id)
+        ->orderBy('proposals.id', 'DESC')
         ->get();
         return new ProposalResource($criteria);
     }
 
     public function getProposalByStudentId($id)
     {
-        $criteria = Proposal::select('*')
-        ->where('id_student','=',$id)
-        ->orderBy('id', 'DESC')
+        $criteria = DB::table('proposals')
+        ->join('students','proposals.id_student','students.id')
+        ->join('lecturers','proposals.id_lecturer','lecturers.id')
+        ->select('proposals.*','students.name','students.major','lecturers.name AS lecturer_name')
+        ->where('proposals.id_student','=',$id)
+        ->orderBy('proposals.id', 'DESC')
         ->get();
         return new ProposalResource($criteria);
     }
 
     public function getProposalByTitle($title)
     {
-        $criteria = Proposal::select('*')
-        ->where('title', 'LIKE', "%".$title."%")
-        ->orderBy('id', 'DESC')
+        $criteria = DB::table('proposals')
+        ->join('students','proposals.id_student','students.id')
+        ->join('lecturers','proposals.id_lecturer','lecturers.id')
+        ->select('proposals.*','students.name','students.major','lecturers.name AS lecturer_name')
+        ->where('proposals.title', 'LIKE', "%".$title."%")
+        ->orderBy('proposals.id', 'DESC')
         ->get();
         return new ProposalResource($criteria);
     }

@@ -12,6 +12,7 @@ use App\Lecturer;
 use App\Report;
 use App\Proposal;
 use App\Student;
+use Illuminate\Support\Facades\DB;
 
 
 class AdminController extends Controller
@@ -97,10 +98,13 @@ class AdminController extends Controller
     {
         $admin = Auth::user();
         if ($admin) {
-            $criteria = Proposal::select('*')
-            ->where('id_lecturer','=',$id)
-            ->where('status','=','accepted')
-            ->orderBy('id', 'DESC')
+            $criteria = DB::table('proposals')
+            ->join('students','proposals.id_student','students.id')
+            ->join('lecturers','proposals.id_lecturer','lecturers.id')
+            ->select('proposals.*','students.name','students.major','lecturers.name AS lecturer_name')
+            ->where('proposals.id_lecturer','=',$id)
+            ->where('proposals.status','=','approved')
+            ->orderBy('proposals.id', 'DESC')
             ->get();
             return new ProposalResource($criteria);
         } else {
@@ -115,10 +119,13 @@ class AdminController extends Controller
     {
         $admin = Auth::user();
         if ($admin) {
-            $criteria = Proposal::select('*')
-            ->where('id_lecturer','=',$id)
-            ->where('status','=','rejected')
-            ->orderBy('id', 'DESC')
+            $criteria = DB::table('proposals')
+            ->join('students','proposals.id_student','students.id')
+            ->join('lecturers','proposals.id_lecturer','lecturers.id')
+            ->select('proposals.*','students.name','students.major','lecturers.name AS lecturer_name')
+            ->where('proposals.id_lecturer','=',$id)
+            ->where('proposals.status','=','rejected')
+            ->orderBy('proposals.id', 'DESC')
             ->get();
             return new ProposalResource($criteria);
         } else {
@@ -133,10 +140,13 @@ class AdminController extends Controller
     {
         $admin = Auth::user();
         if ($admin) {
-            $criteria = Proposal::select('*')
-            ->where('id_lecturer','=',$id)
-            ->where('status','=','waiting')
-            ->orderBy('id', 'DESC')
+            $criteria = DB::table('proposals')
+            ->join('students','proposals.id_student','students.id')
+            ->join('lecturers','proposals.id_lecturer','lecturers.id')
+            ->select('proposals.*','students.name','students.major','lecturers.name AS lecturer_name')
+            ->where('proposals.id_lecturer','=',$id)
+            ->where('proposals.status','=','waiting')
+            ->orderBy('proposals.id', 'DESC')
             ->get();
             return new ProposalResource($criteria);
         } else {
@@ -151,10 +161,13 @@ class AdminController extends Controller
     {
         $admin = Auth::user();
         if ($admin) {
-            $criteria = Report::select('*')
-            ->where('id_lecturer','=',$id)
-            ->where('status','=','accepted')
-            ->orderBy('id', 'DESC')
+            $criteria = DB::table('reports')
+            ->join('students','reports.id_student','students.id')
+            ->join('lecturers','reports.id_lecturer','lecturers.id')
+            ->select('reports.*','students.name','students.major','lecturers.name AS lecturer_name')
+            ->where('reports.id_lecturer','=',$id)
+            ->where('reports.status','=','accepted')
+            ->orderBy('reports.id', 'DESC')
             ->get();
             return new ReportResource($criteria);
         } else {
@@ -169,10 +182,13 @@ class AdminController extends Controller
     {
         $admin = Auth::user();
         if ($admin) {
-            $criteria = Report::select('*')
-            ->where('id_lecturer','=',$id)
-            ->where('status','=','rejected')
-            ->orderBy('id', 'DESC')
+            $criteria = DB::table('reports')
+            ->join('students','reports.id_student','students.id')
+            ->join('lecturers','reports.id_lecturer','lecturers.id')
+            ->select('reports.*','students.name','students.major','lecturers.name AS lecturer_name')
+            ->where('reports.id_lecturer','=',$id)
+            ->where('reports.status','=','rejected')
+            ->orderBy('reports.id', 'DESC')
             ->get();
             return new ReportResource($criteria);
         } else {
@@ -187,10 +203,13 @@ class AdminController extends Controller
     {
         $admin = Auth::user();
         if ($admin) {
-            $criteria = Report::select('*')
-            ->where('id_lecturer','=',$id)
-            ->where('status','=','waiting')
-            ->orderBy('id', 'DESC')
+            $criteria = DB::table('reports')
+            ->join('students','reports.id_student','students.id')
+            ->join('lecturers','reports.id_lecturer','lecturers.id')
+            ->select('reports.*','students.name','students.major','lecturers.name AS lecturer_name')
+            ->where('reports.id_lecturer','=',$id)
+            ->where('reports.status','=','waiting')
+            ->orderBy('reports.id', 'DESC')
             ->get();
             return new ReportResource($criteria);
         } else {
