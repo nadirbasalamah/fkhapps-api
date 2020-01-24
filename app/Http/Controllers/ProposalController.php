@@ -14,7 +14,7 @@ class ProposalController extends Controller
         $criteria = DB::table('proposals')
                     ->join('students','proposals.id_student','students.id')
                     ->join('lecturers','proposals.id_lecturer','lecturers.id')
-                    ->select('proposals.*','students.name','students.major','lecturers.name AS lecturer_name')
+                    ->select('proposals.*','students.name','students.major','students.nim','lecturers.name AS lecturer_name')
                     ->get();
         return new ProposalResource($criteria);
     }
@@ -29,7 +29,7 @@ class ProposalController extends Controller
         $proposals = DB::table('proposals')
         ->join('students','proposals.id_student','students.id')
         ->join('lecturers','proposals.id_lecturer','lecturers.id')
-        ->select('proposals.*','students.name','students.major','lecturers.name AS lecturer_name')
+        ->select('proposals.*','students.name','students.major','students.nim','lecturers.name AS lecturer_name')
         ->where('proposals.id_lecturer','=',$id)
         ->orderBy('proposals.id','DESC')
         ->get();
@@ -52,7 +52,7 @@ class ProposalController extends Controller
         $criteria = DB::table('proposals')
         ->join('students','proposals.id_student','students.id')
         ->join('lecturers','proposals.id_lecturer','lecturers.id')
-        ->select('proposals.*','students.name','students.major','lecturers.name AS lecturer_name')
+        ->select('proposals.*','students.name','students.major','students.nim','lecturers.name AS lecturer_name')
         ->where('proposals.id','=',$id)
         ->orderBy('proposals.id', 'DESC')
         ->get();
@@ -64,7 +64,7 @@ class ProposalController extends Controller
         $criteria = DB::table('proposals')
         ->join('students','proposals.id_student','students.id')
         ->join('lecturers','proposals.id_lecturer','lecturers.id')
-        ->select('proposals.*','students.name','students.major','lecturers.name AS lecturer_name')
+        ->select('proposals.*','students.name','students.major','students.nim','lecturers.name AS lecturer_name')
         ->where('proposals.id_student','=',$id)
         ->orderBy('proposals.id', 'DESC')
         ->get();
@@ -76,7 +76,7 @@ class ProposalController extends Controller
         $criteria = DB::table('proposals')
         ->join('students','proposals.id_student','students.id')
         ->join('lecturers','proposals.id_lecturer','lecturers.id')
-        ->select('proposals.*','students.name','students.major','lecturers.name AS lecturer_name')
+        ->select('proposals.*','students.name','students.major','students.nim','lecturers.name AS lecturer_name')
         ->where('proposals.title', 'LIKE', "%".$title."%")
         ->orderBy('proposals.id', 'DESC')
         ->get();

@@ -14,7 +14,7 @@ class ReportController extends Controller
         $criteria = DB::table('reports')
                     ->join('students','reports.id_student','students.id')
                     ->join('lecturers','reports.id_lecturer','lecturers.id')
-                    ->select('reports.*','students.name','students.major','lecturers.name AS lecturer_name')
+                    ->select('reports.*','students.name','students.major','students.nim','lecturers.name AS lecturer_name')
                     ->get();
         return new ReportResource($criteria);
     }
@@ -29,7 +29,7 @@ class ReportController extends Controller
         $reports = DB::table('reports')
         ->join('students','reports.id_student','students.id')
         ->join('lecturers','reports.id_lecturer','lecturers.id')
-        ->select('reports.*','students.name','students.major','lecturers.name AS lecturer_name')
+        ->select('reports.*','students.name','students.major','students.nim','lecturers.name AS lecturer_name')
         ->where('reports.id_lecturer','=',$id)
         ->orderBy('reports.id','DESC')
         ->get();
@@ -52,7 +52,7 @@ class ReportController extends Controller
         $criteria = DB::table('reports')
         ->join('students','reports.id_student','students.id')
         ->join('lecturers','reports.id_lecturer','lecturers.id')
-        ->select('reports.*','students.name','students.major','lecturers.name AS lecturer_name')
+        ->select('reports.*','students.name','students.major','students.nim','lecturers.name AS lecturer_name')
         ->where('reports.id','=',$id)
         ->orderBy('reports.id', 'DESC')
         ->get();
@@ -64,7 +64,7 @@ class ReportController extends Controller
         $criteria = DB::table('reports')
         ->join('students','reports.id_student','students.id')
         ->join('lecturers','reports.id_lecturer','lecturers.id')
-        ->select('reports.*','students.name','students.major','lecturers.name AS lecturer_name')
+        ->select('reports.*','students.name','students.major','students.nim','lecturers.name AS lecturer_name')
         ->where('reports.id_student','=',$id)
         ->orderBy('reports.id', 'DESC')
         ->get();
@@ -76,7 +76,7 @@ class ReportController extends Controller
         $criteria = DB::table('reports')
         ->join('students','reports.id_student','students.id')
         ->join('lecturers','reports.id_lecturer','lecturers.id')
-        ->select('reports.*','students.name','students.major','lecturers.name AS lecturer_name')
+        ->select('reports.*','students.name','students.major','students.nim','lecturers.name AS lecturer_name')
         ->where('reports.title', 'LIKE', "%".$title."%")
         ->orderBy('reports.id', 'DESC')
         ->get();
