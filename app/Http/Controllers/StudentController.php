@@ -37,7 +37,7 @@ class StudentController extends Controller
     {
         $student = Auth::user();
         $status = "error";
-        $message = "";
+        $message = [];
         $data = [];
         $code = 403;
     if($student){
@@ -49,8 +49,11 @@ class StudentController extends Controller
         ]);
         if ($validator->fails()) {
             $errors = $validator->errors();
+            $fields = ['title','research_background','research_question','filename'];
+            $i = 0;
             foreach ($errors->all() as $msg) {
-                $message .= $msg;
+                $message[$fields[$i]] = $msg;
+                $i++;
             }
         } else {
             $proposalName = time() . "proposal.pdf";
@@ -82,12 +85,12 @@ class StudentController extends Controller
                 $code = 200;
             }
             else{
-                $message = 'upload failed';
+                $message['error'] = 'upload failed';
             }
         }
     }
     else {
-        $message = "Error, access not allowed";
+        $message['error'] = "Error, access not allowed";
     }
         return response()->json([
         'status' => $status,
@@ -100,7 +103,7 @@ class StudentController extends Controller
     {
         $student = Auth::user();
         $status = "error";
-        $message = "";
+        $message = [];
         $data = [];
         $code = 403;
         $isProposalFound = true;
@@ -113,8 +116,11 @@ class StudentController extends Controller
         ]);
         if ($validator->fails()) {
             $errors = $validator->errors();
+            $fields = ['title','research_background','research_question','filename'];
+            $i = 0;
             foreach ($errors->all() as $msg) {
-                $message .= $msg;
+                $message[$fields[$i]] = $msg;
+                $i++;
             }
         } else {
             try {
@@ -154,16 +160,16 @@ class StudentController extends Controller
                     $code = 200;
                 }
                 else{
-                    $message = 'upload failed';
+                    $message['error'] = 'upload failed';
                 }
             } else {
-                $message = 'upload failed, proposal has to be accepted first';
+                $message['error'] = 'upload failed, proposal has to be accepted first';
             }
 
         }
     }
     else {
-        $message = "Error, access not allowed";
+        $message['error'] = "Error, access not allowed";
     }
         return response()->json([
         'status' => $status,

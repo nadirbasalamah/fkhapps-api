@@ -19,16 +19,19 @@ class AuthController extends Controller
             'password' => 'required', 
         ]);
         $status = "error";
-        $message = "";
+        $message = [];
         $data = null;
         $code = 401;
         $isStudentFound = true;
 
         if ($validator->fails()) { // fungsi untuk ngecek apakah validasi gagal
             // validasi gagal
+            $fields = ['nim','password'];
+            $i = 0;
             $errors = $validator->errors();            
             foreach ($errors->all() as $msg) {
-                $message .= $msg;
+                $message[$fields[$i]] = $msg;
+                $i++;
             }
         } else {
             if(is_numeric($request->nim)) {
@@ -46,13 +49,13 @@ class AuthController extends Controller
                         $data = $student->toArray();
                         $code = 200;
                     } else {
-                        $message = "Login failed, invalid password";
+                        $message['password'] = "Login failed, invalid password";
                     }
                 } else {
-                        $message = "Login failed, invalid NIM";
+                        $message['nim'] = "Login failed, invalid NIM";
                 }
             } else {
-                $message = "NIM may only contains number";
+                $message['nim'] = "NIM may only contains number";
             }
             }
         return response()->json([
@@ -70,7 +73,7 @@ class AuthController extends Controller
         ]);
         
         $status = "error";
-        $message = "";
+        $message = [];
         $data = null;
         $code = 401;
         $isLecturerFound = true;
@@ -78,8 +81,11 @@ class AuthController extends Controller
         if ($validator->fails()) { // fungsi untuk ngecek apakah validasi gagal
             // validasi gagal
             $errors = $validator->errors();
+            $fields = ['nip','password'];
+            $i = 0;
             foreach ($errors->all() as $msg) {
-                $message .= $msg;
+                $message[$fields[$i]] = $msg;
+                $i++;
             }
         } else {
             if(is_numeric(str_replace("P",0,$request->nip))) {
@@ -98,13 +104,13 @@ class AuthController extends Controller
                         $data = $lecturer->toArray();
                         $code = 200;
                     } else {
-                        $message = "Login failed, invalid password";
+                        $message['password'] = "Login failed, invalid password";
                     }
                 } else {
-                    $message = "Login failed, invalid NIP";
+                    $message['nip'] = "Login failed, invalid NIP";
                 }
             } else {
-                $message = "NIP may only contains number";
+                $message['nip'] = "NIP may only contains number";
             }
         }
         return response()->json([
@@ -121,7 +127,7 @@ class AuthController extends Controller
             'password' => 'required', 
         ]);
         $status = "error";
-        $message = "";
+        $message = [];
         $data = null;
         $code = 401;
         $isAdminFound = true;
@@ -129,8 +135,11 @@ class AuthController extends Controller
         if ($validator->fails()) { // fungsi untuk ngecek apakah validasi gagal
             // validasi gagal
             $errors = $validator->errors();
+            $fields = ['name','password'];
+            $i = 0;
             foreach ($errors->all() as $msg) {
-                $message .= $msg;
+                $message[$fields[$i]] = $msg;
+                $i++;
             }
         } else {
                 try {
@@ -147,10 +156,10 @@ class AuthController extends Controller
                         $data = $admin->toArray();
                         $code = 200;
                     } else {
-                        $message = "Login failed, invalid password";
+                        $message['password'] = "Login failed, invalid password";
                     }
                 } else {
-                        $message = "Login failed, invalid username";
+                        $message['name'] = "Login failed, invalid username";
                 }   
         }
         return response()->json([
@@ -174,7 +183,7 @@ class AuthController extends Controller
     ]);
 
     $status = "error";
-    $message = "";
+    $message = [];
     $data = null;
     $code = 400;
     $lecturerFound = true;
@@ -182,8 +191,11 @@ class AuthController extends Controller
     if ($validator->fails()) { // fungsi untuk ngecek apakah validasi gagal
         // validasi gagal
         $errors = $validator->errors();
+        $fields = ['nim','name','email','major','study_program','academic_year','nip','password'];
+        $i = 0;
         foreach ($errors->all() as $msg) {
-            $message .= $msg;
+            $message[$fields[$i]] = $msg;
+            $i++;
         }
     }
     else{
@@ -212,11 +224,11 @@ class AuthController extends Controller
                     $code = 200;
                 }
                 else{
-                    $message = 'register failed, nim already exist';
+                    $message['nim'] = 'register failed, nim already exist';
                 }
     
             } else {
-                $message = 'register failed, nip not found';
+                $message['nip'] = 'register failed, nip not found';
             }
         }
     return response()->json([
@@ -237,15 +249,18 @@ class AuthController extends Controller
     ]);
 
     $status = "error";
-    $message = "";
+    $message = [];
     $data = null;
     $code = 400;
 
     if ($validator->fails()) { // fungsi untuk ngecek apakah validasi gagal
         // validasi gagal
         $errors = $validator->errors();
+        $fields = ['nip','name','email','password'];
+        $i = 0;
         foreach ($errors->all() as $msg) {
-            $message .= $msg;
+            $message[$fields[$i]] = $msg;
+            $i++;
         }
     }
     else{
@@ -265,10 +280,10 @@ class AuthController extends Controller
                 $code = 200;
             }
             else{
-                $message = 'register failed';
+                $message['error'] = 'register failed';
             }
         } else {
-            $message = 'NIP may only contains number';
+            $message['nip'] = 'NIP may only contains number';
         }
     }
 
