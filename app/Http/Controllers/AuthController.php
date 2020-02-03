@@ -26,11 +26,14 @@ class AuthController extends Controller
 
         if ($validator->fails()) { // fungsi untuk ngecek apakah validasi gagal
             // validasi gagal
-            $fields = ['nim','password'];
-            $i = 0;
             $errors = $validator->errors();            
+            $messages = [];
+            $fields = [];
+            $i = 0;
             foreach ($errors->all() as $msg) {
-                $message[$fields[$i]] = $msg;
+                array_push($messages,$msg);
+                $fields[$i] = explode(" ",$messages[$i]);
+                $message[$fields[$i][1]] = $messages[$i];
                 $i++;
             }
         } else {
@@ -81,10 +84,13 @@ class AuthController extends Controller
         if ($validator->fails()) { // fungsi untuk ngecek apakah validasi gagal
             // validasi gagal
             $errors = $validator->errors();
-            $fields = ['nip','password'];
+            $messages = [];
+            $fields = [];
             $i = 0;
             foreach ($errors->all() as $msg) {
-                $message[$fields[$i]] = $msg;
+                array_push($messages,$msg);
+                $fields[$i] = explode(" ",$messages[$i]);
+                $message[$fields[$i][1]] = $messages[$i];
                 $i++;
             }
         } else {
@@ -135,10 +141,13 @@ class AuthController extends Controller
         if ($validator->fails()) { // fungsi untuk ngecek apakah validasi gagal
             // validasi gagal
             $errors = $validator->errors();
-            $fields = ['name','password'];
+            $messages = [];
+            $fields = [];
             $i = 0;
             foreach ($errors->all() as $msg) {
-                $message[$fields[$i]] = $msg;
+                array_push($messages,$msg);
+                $fields[$i] = explode(" ",$messages[$i]);
+                $message[$fields[$i][1]] = $messages[$i];
                 $i++;
             }
         } else {
@@ -191,12 +200,15 @@ class AuthController extends Controller
     if ($validator->fails()) { // fungsi untuk ngecek apakah validasi gagal
         // validasi gagal
         $errors = $validator->errors();
-        $fields = ['nim','name','email','major','study_program','academic_year','nip','password'];
-        $i = 0;
-        foreach ($errors->all() as $msg) {
-            $message[$fields[$i]] = $msg;
-            $i++;
-        }
+        $messages = [];
+            $fields = [];
+            $i = 0;
+            foreach ($errors->all() as $msg) {
+                array_push($messages,$msg);
+                $fields[$i] = explode(" ",$messages[$i]);
+                $message[$fields[$i][1]] = $messages[$i];
+                $i++;
+            }
     }
     else{
         // validasi sukses
@@ -256,12 +268,15 @@ class AuthController extends Controller
     if ($validator->fails()) { // fungsi untuk ngecek apakah validasi gagal
         // validasi gagal
         $errors = $validator->errors();
-        $fields = ['nip','name','email','password'];
-        $i = 0;
-        foreach ($errors->all() as $msg) {
-            $message[$fields[$i]] = $msg;
-            $i++;
-        }
+        $messages = [];
+            $fields = [];
+            $i = 0;
+            foreach ($errors->all() as $msg) {
+                array_push($messages,$msg);
+                $fields[$i] = explode(" ",$messages[$i]);
+                $message[$fields[$i][1]] = $messages[$i];
+                $i++;
+            }
     }
     else{
         if(is_numeric($request->nip) && ctype_alpha(str_replace(' ','',$request->name))) {
