@@ -41,7 +41,6 @@ class StudentController extends Controller
         $data = [];
         $code = 403;
     if($student){
-        //TODO: upload proposal
         $validator = Validator::make($request->all(), [
             'title' => 'required',
             'research_background' => 'required',
@@ -50,7 +49,9 @@ class StudentController extends Controller
         ]);
         if ($validator->fails()) {
             $errors = $validator->errors();
-            $message = $errors;
+            foreach ($errors->all() as $msg) {
+                $message .= $msg;
+            }
         } else {
             $proposalName = time() . "proposal.pdf";
             $path = $request->file('filename')->move(public_path("/proposals"), $proposalName);
@@ -104,7 +105,6 @@ class StudentController extends Controller
         $code = 403;
         $isProposalFound = true;
     if($student){
-        //TODO: upload report
         $validator = Validator::make($request->all(), [
             'title' => 'required',
             'research_background' => 'required',
@@ -113,7 +113,9 @@ class StudentController extends Controller
         ]);
         if ($validator->fails()) {
             $errors = $validator->errors();
-            $message = $errors;
+            foreach ($errors->all() as $msg) {
+                $message .= $msg;
+            }
         } else {
             try {
                 $proposal = Proposal::where('id_student','=',$student->id)->where('status','=','approved')->firstOrfail();

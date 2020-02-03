@@ -39,7 +39,9 @@ class LecturerController extends Controller
             ]);
             if ($validator->fails()) {
                 $errors = $validator->errors();
-                $message = $errors;
+                foreach ($errors->all() as $msg) {
+                    $message .= $msg;
+                }
             } else {
                 $proposal = Proposal::find($id);
                 if (!is_null($proposal)) {
@@ -92,7 +94,9 @@ class LecturerController extends Controller
             ]);
             if ($validator->fails()) {
                 $errors = $validator->errors();
-                $message = $errors;
+                foreach ($errors->all() as $msg) {
+                    $message .= $msg;
+                }
             } else {
                 $report = Report::find($id);
                 if (!is_null($report)) {

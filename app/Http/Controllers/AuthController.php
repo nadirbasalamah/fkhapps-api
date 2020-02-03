@@ -26,8 +26,10 @@ class AuthController extends Controller
 
         if ($validator->fails()) { // fungsi untuk ngecek apakah validasi gagal
             // validasi gagal
-            $errors = $validator->errors();
-            $message = $errors;
+            $errors = $validator->errors();            
+            foreach ($errors->all() as $msg) {
+                $message .= $msg;
+            }
         } else {
             if(is_numeric($request->nim)) {
                 try {
@@ -76,7 +78,9 @@ class AuthController extends Controller
         if ($validator->fails()) { // fungsi untuk ngecek apakah validasi gagal
             // validasi gagal
             $errors = $validator->errors();
-            $message = $errors;
+            foreach ($errors->all() as $msg) {
+                $message .= $msg;
+            }
         } else {
             if(is_numeric(str_replace("P",0,$request->nip))) {
                 try {
@@ -125,7 +129,9 @@ class AuthController extends Controller
         if ($validator->fails()) { // fungsi untuk ngecek apakah validasi gagal
             // validasi gagal
             $errors = $validator->errors();
-            $message = $errors;
+            foreach ($errors->all() as $msg) {
+                $message .= $msg;
+            }
         } else {
                 try {
                     $admin = Admin::where('name', '=', $request->name)->firstOrFail();
@@ -176,7 +182,9 @@ class AuthController extends Controller
     if ($validator->fails()) { // fungsi untuk ngecek apakah validasi gagal
         // validasi gagal
         $errors = $validator->errors();
-        $message = $errors;
+        foreach ($errors->all() as $msg) {
+            $message .= $msg;
+        }
     }
     else{
         // validasi sukses
@@ -236,7 +244,9 @@ class AuthController extends Controller
     if ($validator->fails()) { // fungsi untuk ngecek apakah validasi gagal
         // validasi gagal
         $errors = $validator->errors();
-        $message = $errors;
+        foreach ($errors->all() as $msg) {
+            $message .= $msg;
+        }
     }
     else{
         if(is_numeric($request->nip) && ctype_alpha(str_replace(' ','',$request->name))) {
@@ -285,7 +295,9 @@ class AuthController extends Controller
     if ($validator->fails()) { // fungsi untuk ngecek apakah validasi gagal
         // validasi gagal
         $errors = $validator->errors();
-        $message = $errors;
+        foreach ($errors->all() as $msg) {
+            $message .= $msg;
+        }
     }
     else{
             // validasi sukses
