@@ -34,8 +34,7 @@ class LecturerController extends Controller
         $lecturer = Auth::user();
         if ($lecturer) {
             $validator = Validator::make($request->all(), [
-                'status' => 'required',
-                'notes' => 'required'
+                'status' => 'required'
             ]);
             if ($validator->fails()) {
                 $errors = $validator->errors();
@@ -89,8 +88,7 @@ class LecturerController extends Controller
         $lecturer = Auth::user();
         if ($lecturer) {
             $validator = Validator::make($request->all(), [
-                'status' => 'required',
-                'notes' => 'required'
+                'status' => 'required'
             ]);
             if ($validator->fails()) {
                 $errors = $validator->errors();

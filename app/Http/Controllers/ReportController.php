@@ -21,11 +21,9 @@ class ReportController extends Controller
 
     public function getAllReportsByLecturerId(Request $request, $id)
     {
-        $lecturer = Auth::user();
         $status = "error";
         $message = "";
         $data = [];
-    if($lecturer){
         $reports = DB::table('reports')
         ->join('students','reports.id_student','students.id')
         ->join('lecturers','reports.id_lecturer','lecturers.id')
@@ -36,10 +34,7 @@ class ReportController extends Controller
         $status = "success";
         $message = "data of reports";
         $data = $reports;
-    }
-    else {
-        $message = "Report not found";
-    }
+    
         return response()->json([
         'status' => $status,
         'message' => $message,

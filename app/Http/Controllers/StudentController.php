@@ -49,16 +49,25 @@ class StudentController extends Controller
         ]);
         if ($validator->fails()) {
             $errors = $validator->errors();
-            $fields = ['title','research_background','research_question','filename'];
-            $i = 0;
-            foreach ($errors->all() as $msg) {
-                $message[$fields[$i]] = $msg;
-                $i++;
+            foreach($errors->get('title') as $msg) {
+                $message['title'] = $msg;
+            }
+            
+            foreach($errors->get('research_background') as $msg) {
+                $message['research_background'] = $msg;
+            }
+            
+            foreach($errors->get('research_question') as $msg) {
+                $message['research_question'] = $msg;
+            }
+            
+            foreach($errors->get('filename') as $msg) {
+                $message['filename'] = $msg;
             }
         } else {
             $proposalName = time() . "proposal.pdf";
             $path = $request->file('filename')->move(public_path("/proposals"), $proposalName);
-            $proposalUrl = url("/public/proposals/" . $proposalName);
+            $proposalUrl = url("/proposals/" . $proposalName);
             $id_lecturer = DB::table('lecturers')->select('id')->where('nip','=','P' . $student->nip)->get(['id'])->pluck('id');
             $lecturer_email = DB::table('lecturers')->select('email')->where('nip','=','P' . $student->nip)->get(['email'])->pluck('email');
             $proposal = Proposal::create([
@@ -80,7 +89,7 @@ class StudentController extends Controller
                 //Mail to lecturer's email
                 Mail::to($lecturer_email[0])->send(new TestMail($data));
                 $status = "success";
-                $message = "upload success";
+                $message['success'] = "upload success";
                 $data = $proposal->toArray();
                 $code = 200;
             }
@@ -116,11 +125,20 @@ class StudentController extends Controller
         ]);
         if ($validator->fails()) {
             $errors = $validator->errors();
-            $fields = ['title','research_background','research_question','filename'];
-            $i = 0;
-            foreach ($errors->all() as $msg) {
-                $message[$fields[$i]] = $msg;
-                $i++;
+            foreach($errors->get('title') as $msg) {
+                $message['title'] = $msg;
+            }
+            
+            foreach($errors->get('research_background') as $msg) {
+                $message['research_background'] = $msg;
+            }
+            
+            foreach($errors->get('research_question') as $msg) {
+                $message['research_question'] = $msg;
+            }
+            
+            foreach($errors->get('filename') as $msg) {
+                $message['filename'] = $msg;
             }
         } else {
             try {
@@ -131,7 +149,7 @@ class StudentController extends Controller
             if($isProposalFound) {
                 $reportName = time() . "laporan_akhir.pdf";
                 $path = $request->file('filename')->move(public_path("/proposals"), $reportName);
-                $reportUrl = url("/public/proposals/" . $reportName);
+                $reportUrl = url("/proposals/" . $reportName);
                 $id_lecturer = DB::table('lecturers')->select('id')->where('nip','=','P' . $student->nip)->get(['id'])->pluck('id');
                 $lecturer_email = DB::table('lecturers')->select('email')->where('nip','=','P' . $student->nip)->get(['email'])->pluck('email');
                 $report = Report::create([
@@ -153,9 +171,8 @@ class StudentController extends Controller
                     //Mail to lecturer's email
                     Mail::to($lecturer_email[0])->send(new TestMail($data));
 
-
                     $status = "success";
-                    $message = "upload success";
+                    $message['success'] = "upload success";
                     $data = $report->toArray();
                     $code = 200;
                 }

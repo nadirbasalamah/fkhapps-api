@@ -24,9 +24,7 @@ Route::prefix('v1')->group(function () {
     Route::post('loginAdmin', 'AuthController@loginAdmin');
     Route::post('registerStudent', 'AuthController@registerStudent');
     Route::post('registerLecturer', 'AuthController@registerLecturer');
-    //temp
-    Route::post('registerAdmin','AuthController@registerAdmin');
-    
+    // Route::post('registerAdmin','AuthController@registerAdmin');
     Route::get('getAllProposal','ProposalController@getAllProposal');
     Route::get('getProposalById/{id}', 'ProposalController@getProposalById');
     Route::get('getProposalByStudentId/{id}', 'ProposalController@getProposalByStudentId');
@@ -36,6 +34,9 @@ Route::prefix('v1')->group(function () {
     Route::get('getReportById/{id}', 'ReportController@getReportById');
     Route::get('getReportByStudentId/{id}', 'ReportController@getReportByStudentId');
     Route::get('getReportByTitle/{title}', 'ReportController@getReportByTitle');
+
+    Route::get('getProposalByLecturerId/{id}','ProposalController@getAllProposalsByLecturerId');
+    Route::get('getReportByLecturerId/{id}','ReportController@getAllReportsByLecturerId');
 
     Route::get('getStudentById/{id}', 'StudentController@getStudentById');
     Route::get('getStudentByToken/{token}','StudentController@getStudentByToken');
@@ -52,8 +53,6 @@ Route::prefix('v1')->group(function () {
 
     //private routes for lecturer
     Route::middleware('auth:lecturer')->group(function () {
-        Route::get('getProposalByLecturerId/{id}','ProposalController@getAllProposalsByLecturerId');
-        Route::get('getReportByLecturerId/{id}','ReportController@getAllReportsByLecturerId');
         Route::post('verifyProposal/{id}','LecturerController@verifyProposal');
         Route::post('verifyReport/{id}','LecturerController@verifyReport');
         Route::post('logoutLecturer', 'AuthController@logoutLecturer');

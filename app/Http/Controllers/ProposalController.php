@@ -21,11 +21,9 @@ class ProposalController extends Controller
 
     public function getAllProposalsByLecturerId(Request $request, $id)
     {
-        $lecturer = Auth::user();
         $status = "error";
         $message = "";
         $data = [];
-    if($lecturer){
         $proposals = DB::table('proposals')
         ->join('students','proposals.id_student','students.id')
         ->join('lecturers','proposals.id_lecturer','lecturers.id')
@@ -36,10 +34,7 @@ class ProposalController extends Controller
         $status = "success";
         $message = "data of proposals";
         $data = $proposals;
-    }
-    else {
-        $message = "Proposal not found";
-    }
+    
         return response()->json([
         'status' => $status,
         'message' => $message,

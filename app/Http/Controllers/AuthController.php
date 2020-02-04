@@ -48,7 +48,7 @@ class AuthController extends Controller
                         //generate token
                         $student->generateToken();
                         $status = 'success';
-                        $message = 'Login sukses';
+                        $message['success'] = 'Login sukses';
                         $data = $student->toArray();
                         $code = 200;
                     } else {
@@ -106,7 +106,7 @@ class AuthController extends Controller
                         //generate token
                         $lecturer->generateToken();
                         $status = 'success';
-                        $message = 'Login sukses';
+                        $message['success'] = 'Login sukses';
                         $data = $lecturer->toArray();
                         $code = 200;
                     } else {
@@ -161,7 +161,7 @@ class AuthController extends Controller
                         //generate token
                         $admin->generateToken();
                         $status = 'success';
-                        $message = 'Login sukses';
+                        $message['success'] = 'Login sukses';
                         $data = $admin->toArray();
                         $code = 200;
                     } else {
@@ -231,7 +231,7 @@ class AuthController extends Controller
                 if($student){
                     $student->generateToken();
                     $status = "success";
-                    $message = "register successfully";
+                    $message['success'] = "register successfully";
                     $data = $student->toArray();
                     $code = 200;
                 }
@@ -290,7 +290,7 @@ class AuthController extends Controller
             if($lecturer){
                 $lecturer->generateToken();
                 $status = "success";
-                $message = "register successfully";
+                $message['success'] = "register successfully";
                 $data = $lecturer->toArray();
                 $code = 200;
             }
@@ -310,51 +310,7 @@ class AuthController extends Controller
 
     }
 
-    public function registerAdmin(Request $request)
-    {
-    $validator = Validator::make($request->all(), [
-    'name' => 'required|string',
-    'password' => 'required|string|min:6', // password minimal 6 karakter
-    ]);
-
-    $status = "error";
-    $message = "";
-    $data = null;
-    $code = 400;
-
-    if ($validator->fails()) { // fungsi untuk ngecek apakah validasi gagal
-        // validasi gagal
-        $errors = $validator->errors();
-        foreach ($errors->all() as $msg) {
-            $message .= $msg;
-        }
-    }
-    else{
-            // validasi sukses
-            $admin = Admin::create([
-                'name' => $request->name,
-                'password' => Hash::make($request->password),
-            ]);
-            if($admin){
-                $admin->generateToken();
-                $status = "success";
-                $message = "register successfully";
-                $data = $admin->toArray();
-                $code = 200;
-            }
-            else{
-                $message = 'register failed';
-            }
-        
-    }
-
-    return response()->json([
-        'status' => $status,
-        'message' => $message,
-        'data' => $data
-    ], $code);
-
-    }
+   
     public function logoutStudent(Request $request)
     {
     $student = Auth::user();

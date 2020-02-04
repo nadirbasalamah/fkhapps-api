@@ -12,6 +12,7 @@ use App\Lecturer;
 use App\Report;
 use App\Proposal;
 use App\Student;
+use App\Admin;
 use Illuminate\Support\Facades\DB;
 
 
@@ -22,6 +23,8 @@ class AdminController extends Controller
     {
         $isStudentFound = true;
         $isLecturerFound = true;
+        $isAdminFound = true;
+        
         try {
             $student = Student::where('api_token','=',$token)->firstOrfail();
         } catch (\Throwable $th) {
@@ -33,11 +36,23 @@ class AdminController extends Controller
         } catch (\Throwable $th) {
             $isLecturerFound = false;
         }
+
+        try {
+            $admin = Admin::where('api_token','=',$token)->firstOrfail();
+        } catch (\Throwable $th) {
+            $isAdminFound = false;
+        }
         
         if($isStudentFound) {
             return new StudentResource($student);
         } else if($isLecturerFound) {
             return new LecturerResource($lecturer);
+        } else if($isAdminFound) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'admin data',
+                'data' => $admin
+            ],200);
         } else {
             return response()->json([
                 'status' => "error",
