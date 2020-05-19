@@ -58,7 +58,7 @@ return [
             'provider' => 'lecturers',
             'hash' => false,
         ],
-
+        
         'admin' => [
             'driver' => 'token',
             'provider' => 'admin',
@@ -100,7 +100,6 @@ return [
             'driver' => 'eloquent',
             'model' => \App\Admin::class
         ]
-
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',

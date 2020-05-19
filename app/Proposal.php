@@ -12,7 +12,8 @@ class Proposal extends Model
      * @var array
      */
     protected $fillable = [
-        'id_student','id_lecturer','title','research_background','research_question','filename','status','notes'
+        'id_student','id_lecturer','course','title','research_background','research_question','filename','status','notes',
+        'revision'
     ];
 
     public function student()

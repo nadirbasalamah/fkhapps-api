@@ -51,7 +51,7 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => public_path() . '/proposals',
-            'url' => env('APP_URL').'/public',
+            'url' => env('APP_URL') . '/proposals',
             'visibility' => 'public',
         ],
 

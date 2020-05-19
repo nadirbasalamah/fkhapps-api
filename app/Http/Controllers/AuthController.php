@@ -26,7 +26,7 @@ class AuthController extends Controller
 
         if ($validator->fails()) { // fungsi untuk ngecek apakah validasi gagal
             // validasi gagal
-            $errors = $validator->errors();            
+            $errors = $validator->errors();
             $messages = [];
             $fields = [];
             $i = 0;
@@ -60,7 +60,7 @@ class AuthController extends Controller
             } else {
                 $message['nim'] = "NIM may only contains number";
             }
-            }
+        }
         return response()->json([
             'status' => $status,
             'message' => $message,
@@ -100,7 +100,6 @@ class AuthController extends Controller
                 } catch (\Throwable $th) {
                     $isLecturerFound = false;
                 }
-                
                 if ($isLecturerFound) {
                     if (Hash::check($request->password, $lecturer->password)) {
                         //generate token
@@ -125,7 +124,7 @@ class AuthController extends Controller
             'data' => $data
         ], $code);
     }
-
+    
     public function loginAdmin(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -187,7 +186,6 @@ class AuthController extends Controller
     'major' => 'required|string|regex:/^[a-z .\-]+$/i',
     'study_program' => 'required|string|regex:/^[a-z .\-]+$/i',
     'academic_year' => 'required|integer',
-    'nip' => 'required|string|regex:/^[0-9 .\-]+$/i|min:15|max:15', // nip harus diisi teks dengan panjang maksimal 15
     'password' => 'required|string|min:6', // password minimal 6 karakter
     ]);
 
@@ -201,8 +199,8 @@ class AuthController extends Controller
         // validasi gagal
         $errors = $validator->errors();
         $messages = [];
-            $fields = [];
-            $i = 0;
+        $fields = [];
+        $i = 0;
             foreach ($errors->all() as $msg) {
                 array_push($messages,$msg);
                 $fields[$i] = explode(" ",$messages[$i]);
@@ -211,50 +209,38 @@ class AuthController extends Controller
             }
     }
     else{
-        // validasi sukses
-            try {
-                $lecturer = Lecturer::where('nip', '=', 'P' . $request->nip)->firstOrFail();
-            } catch (\Throwable $th) {
-                $lecturerFound = false;
+            $student = Student::create([
+                'nim' => $request->nim,
+                'name' => $request->name,
+                'email' => $request->email,
+                'major' => $request->major,
+                'study_program' => $request->study_program,
+                'academic_year' => $request->academic_year,
+                'password' => Hash::make($request->password),
+            ]);
+            if($student){
+                $student->generateToken();
+                $status = "success";
+                $message['success'] = "register successfully";
+                $data = $student->toArray();
+                $code = 200;
             }
-            if($lecturerFound) {
-                $student = Student::create([
-                    'nim' => $request->nim,
-                    'name' => $request->name,
-                    'email' => $request->email,
-                    'major' => $request->major,
-                    'study_program' => $request->study_program,
-                    'academic_year' => $request->academic_year,
-                    'nip' => $request->nip,
-                    'password' => Hash::make($request->password),
-                ]);
-                if($student){
-                    $student->generateToken();
-                    $status = "success";
-                    $message['success'] = "register successfully";
-                    $data = $student->toArray();
-                    $code = 200;
-                }
-                else{
-                    $message['nim'] = 'register failed, nim already exist';
-                }
-    
-            } else {
-                $message['nip'] = 'register failed, nip not found';
+            else{
+                $message['nim'] = 'register failed, nim already exist';
             }
-        }
+    }
+
     return response()->json([
         'status' => $status,
         'message' => $message,
         'data' => $data
     ], $code);
-
     }
 
     public function registerLecturer(Request $request)
     {
     $validator = Validator::make($request->all(), [
-    'nip' => 'required|string|min:15|max:15', // nim harus diisi teks dengan panjang maksimal 15
+    'nip' => 'required|string|min:15|max:15', // nip harus diisi teks dengan panjang maksimal 15
     'name' => 'required|string',
     'email' => 'required|email',
     'password' => 'required|string|min:6', // password minimal 6 karakter
@@ -269,8 +255,8 @@ class AuthController extends Controller
         // validasi gagal
         $errors = $validator->errors();
         $messages = [];
-            $fields = [];
-            $i = 0;
+        $fields = [];
+        $i = 0;
             foreach ($errors->all() as $msg) {
                 array_push($messages,$msg);
                 $fields[$i] = explode(" ",$messages[$i]);
@@ -285,7 +271,7 @@ class AuthController extends Controller
                 'nip' => 'P'. $request->nip,
                 'name' => $request->name,
                 'email' => $request->email,
-                'password' => Hash::make($request->password),
+                'password' => Hash::make($request->password)
             ]);
             if($lecturer){
                 $lecturer->generateToken();
@@ -298,7 +284,12 @@ class AuthController extends Controller
                 $message['error'] = 'register failed';
             }
         } else {
-            $message['nip'] = 'NIP may only contains number';
+            if(!is_numeric($request->nip)) {
+                $message['nip'] = 'NIP may only contains number';    
+            } else {
+                $message['name'] = 'name may only contains alphabetical characters';
+            }
+            
         }
     }
 
@@ -309,8 +300,6 @@ class AuthController extends Controller
     ], $code);
 
     }
-
-   
     public function logoutStudent(Request $request)
     {
     $student = Auth::user();
@@ -338,7 +327,7 @@ class AuthController extends Controller
     'data' => null
     ], 200);
     }
-
+    
     public function logoutAdmin(Request $request)
     {
     $admin = Auth::user();

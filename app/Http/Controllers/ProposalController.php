@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Resources\Proposals as ProposalResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class ProposalController extends Controller
 {
@@ -21,9 +22,11 @@ class ProposalController extends Controller
 
     public function getAllProposalsByLecturerId(Request $request, $id)
     {
+        // $lecturer = Auth::user();
         $status = "error";
         $message = "";
         $data = [];
+    // if($lecturer){
         $proposals = DB::table('proposals')
         ->join('students','proposals.id_student','students.id')
         ->join('lecturers','proposals.id_lecturer','lecturers.id')
@@ -34,7 +37,10 @@ class ProposalController extends Controller
         $status = "success";
         $message = "data of proposals";
         $data = $proposals;
-    
+    // }
+    // else {
+    //     $message = "Proposal not found";
+    // }
         return response()->json([
         'status' => $status,
         'message' => $message,
@@ -76,5 +82,64 @@ class ProposalController extends Controller
         ->orderBy('proposals.id', 'DESC')
         ->get();
         return new ProposalResource($criteria);
+    }
+    
+    public function getAllProposalsByCourse(Request $request,$course)
+    {
+
+        $criteria = DB::table('proposals')
+            ->join('students','proposals.id_student','students.id')
+            ->join('lecturers','proposals.id_lecturer','lecturers.id')
+            ->select('proposals.*','students.name','students.major','students.nim','lecturers.name AS lecturer_name')
+            ->where('proposals.course', 'LIKE', "%".$course."%")
+            ->orderBy('proposals.id', 'DESC')
+            ->get();
+            return new ProposalResource($criteria);
+    }
+    
+    public function getProposalByCourse(Request $request,$course)
+    {
+        $validator = Validator::make($request->all(), [
+            'id_student' => 'required'        
+        ]);
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            foreach($errors->get('id_student') as $msg) {
+                $message['id_student'] = $msg;
+            }            
+        } else {
+            $criteria = DB::table('proposals')
+                ->join('students','proposals.id_student','students.id')
+                ->join('lecturers','proposals.id_lecturer','lecturers.id')
+                ->select('proposals.*','students.name','students.major','students.nim','lecturers.name AS lecturer_name')
+                ->where('proposals.course', 'LIKE', "%".$course."%")
+                ->where('proposals.id_student','=',$request->id_student)
+                ->orderBy('proposals.id', 'DESC')
+                ->get();
+                return new ProposalResource($criteria);
+        }
+    }
+    
+    public function getProposalByLecturerCourse(Request $request,$course)
+    {
+        $validator = Validator::make($request->all(), [
+            'id_lecturer' => 'required'        
+        ]);
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            foreach($errors->get('id_lecturer') as $msg) {
+                $message['id_lecturer'] = $msg;
+            }            
+        } else {
+            $criteria = DB::table('proposals')
+                ->join('students','proposals.id_student','students.id')
+                ->join('lecturers','proposals.id_lecturer','lecturers.id')
+                ->select('proposals.*','students.name','students.major','students.nim','lecturers.name AS lecturer_name')
+                ->where('proposals.course', 'LIKE', "%".$course."%")
+                ->where('proposals.id_lecturer','=',$request->id_lecturer)
+                ->orderBy('proposals.id', 'DESC')
+                ->get();
+                return new ProposalResource($criteria);
+        }
     }
 }
